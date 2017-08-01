@@ -1,0 +1,33 @@
+---
+- name: Install Zabbix Agent on Nodes
+  hosts: nodes
+  gather_facts: no
+  remote_user: ec2_user
+  become: yes
+  become_user: root
+  tasks:
+  - name: Enable Zabbix Repos
+    shell: rpm -ivh http://repo.zabbix.com/zabbix/3.2/rhel/7/x86_64/zabbix-release-3.2-1.el7.noarch.rpm
+    ignore_errors: yes
+  - name: Update Repos
+    shell: yum repolist
+  - name: Install Zabbix Agent
+    yum:
+      name: zabbix-agent
+      state: latest
+  - name: Start Zabbix Agent
+    systemd:
+      name: zabbix-agent
+      state: started
+      enabled: yes
+  - name: Make sure firewall has open port 10250
+    lineinfile:
+      dest: /etc/sysconfig/iptables
+      insertbefore: '-A INPUT -j OS_FIREWALL_ALLOW'
+      line: '-A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 10250 -j ACCEPT'
+      state: present
+  - name: Restart IP Tables service
+    systemd:
+      name: iptables
+      state: restarted
+      daemon_reload: yes
