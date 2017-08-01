@@ -27,7 +27,7 @@
     lineinfile:
       dest: /etc/sysconfig/iptables
       insertbefore: '-A INPUT -j OS_FIREWALL_ALLOW'
-      line: '-A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 10050 -j ACCEPT'
+      line: '-A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 10250 -j ACCEPT'
       state: present
   - name: Restart IP Tables service
     systemd:
