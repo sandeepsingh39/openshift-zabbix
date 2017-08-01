@@ -1,0 +1,3 @@
+# Zabbix Monitoring for OpenShift
+
+This repository contains definitions and tools to monitor Red Hat OpenShift Container Platform with Zabbix.
