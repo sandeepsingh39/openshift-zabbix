@@ -1,4 +1,6 @@
-# zabbix_configure_nodes.yml
+
+---
+# configure-zabbix-agents.yml
 - name: configure nodes for docker monitoring in zabbix
   hosts: nodes
   gather_facts: no
@@ -30,21 +32,21 @@
     command: semanage permissive -a zabbix_agent_t
     when: permissive|failed
 
-  - name: Create userParamater for key docker.ps[]
+  - name: Create userParameter for key docker.ps[]
     copy:
       dest: /etc/zabbix/zabbix_agentd.d/docker.conf
       content: |
         UserParameter=docker.ps[*],sudo docker ps -q -f $1|wc -l
     notify: restart zabbix agent
 
-  - name: Create userParamater for lvm.data[]
+  - name: Create userParameter for lvm.data[]
     copy:
       dest: /etc/zabbix/zabbix_agentd.d/lvm.conf
       content: |
         UserParameter=lvm.data[*],LVM_SUPPRESS_FD_WARNINGS=1 sudo lvs --no-heading -o lv_name,$2|awk '$$1 == "$1" { print $$2 }'
     notify: restart zabbix agent
 
-  - name: Create userParamater for openshift_node.requests[]
+  - name: Create userParameter for openshift_node.requests[]
     copy:
       dest: /etc/zabbix/zabbix_agentd.d/requests.conf
       content: |
@@ -54,6 +56,7 @@
   - name: install bc
     yum:
       name: bc
+      state: present
 
 - name: configure zabbix SA and fetch TOKEN and URL
   hosts: masters[0]
