@@ -31,7 +31,7 @@
   - name: Start Zabbix Agent
     systemd:
       name: zabbix-agent
-      state: started
+      state: restarted
       enabled: yes
   - name: Make sure firewall has port 10050 open
     lineinfile:
