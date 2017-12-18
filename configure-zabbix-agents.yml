@@ -76,7 +76,7 @@
     when: sacommand | failed
 
   - name: get token (step 1)
-    shell: "{% raw %}oc get sa/zabbix -n default --template='{{range .secrets}}{{ .name }} {{end}}' | xargs -n 1 oc get secret --template='{{ if .data.token }}{{ .data.token }}{{end}}' | head -n 1 | base64 -d - > /tmp/zabbix.token{% endraw %}"
+    shell: "{% raw %}oc get sa/zabbix -n default --template='{{range .secrets}}{{ .name }} {{end}}' | xargs -n 1 oc -n default get secret --template='{{ if .data.token }}{{ .data.token }}{{end}}' | head -n 1 | base64 -d - > /tmp/zabbix.token{% endraw %}"
     changed_when: false
 
   # cannot use register directly in step 1 as there seem to be a bug in ansible
